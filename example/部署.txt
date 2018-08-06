@@ -1,0 +1,49 @@
+PM2
+
+pm2 --name "ss-server" -f start server.js -x -- -c default.yml
+pm2 --name "web-server" -f start server.js -x -- -c webgui.json
+pm2 --name "dev-server" -f start server.js -x -- -c dev.json
+pm2 save
+
+
+配置路径
+~/.ssmgr/default.yml
+
+
+后台运行
+screen -ls
+screen -wipe
+PID=$(ps -ef | grep -v grep | grep -i "SS-node-libev" | awk '{print $2}')
+screen -dmS ss-node ss-manager -m aes-256-cfb -u --manager-address 127.0.0.1:6001
+
+
+
+查看端口占用
+netstat -tunlp
+
+
+
+服务
+libev版
+service shadowsocks-manager status
+service shadowsocks-manager start
+service shadowsocks-manager stop
+
+
+chkconfig --del shadowsocks-manager
+rm -f /etc/init.d/shadowsocks-manager
+vim /etc/init.d/shadowsocks-manager
+
+chmod +x /etc/init.d/shadowsocks-manager
+chkconfig --add shadowsocks-manager
+chkconfig shadowsocks-manager on
+
+
+配置
+/etc/shadowsocks-manager/config.json
+
+
+
+
+
+

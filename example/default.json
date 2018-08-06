@@ -1,0 +1,11 @@
+{
+    "type": "s",
+    "shadowsocks": {
+        "address": "127.0.0.1:6001"
+    },
+    "manager": {
+        "address": "0.0.0.0:6002",
+        "password": "123456"
+    },
+    "db": "ss.sqlite"
+}
