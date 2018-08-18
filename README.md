@@ -24,15 +24,24 @@ shadowsocks-manager： [前往查看shadowsocks-manager最新版](https://github
 yum -y install wget
 
 # Ubuntu
-apt-get -y istall wget
+apt-get -y install wget
 ```
 
-安装服务
+下载脚本
 ```
 rm -rf ./install.sh ./shadowsocks-manager.log
 wget --no-check-certificate https://raw.githubusercontent.com/quniu/ssmgr-deploy/master/install.sh
 chmod +x install.sh
+```
+
+安装服务
+```
 ./install.sh 2>&1 | tee shadowsocks-manager.log
+```
+
+设置固定时间自动重启（选最后一项）
+```
+./install.sh 2>&1 | tee restart-time.log
 ```
 
 ### 安装说明
@@ -55,9 +64,9 @@ shadowsocks-manager 安装目录在`/usr/local/`下面
 
 
 
-### 查看shadowsocksr服务
+### 查看shadowsocks服务
 
-默认安装成功之后会自动启动服务
+默认安装成功之后会自动启动ss服务,重启也会自动启动ss服务
 ```
 service shadowsocks-manager status
 service shadowsocks-manager stop

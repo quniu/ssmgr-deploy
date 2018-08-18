@@ -1,0 +1,64 @@
+{
+    "type": "m",
+    "manager": {
+        "address": "0.0.0.0:6002",
+        "password": "123456"
+    },
+    "plugins": {
+        "flowSaver": {
+            "use": true
+        },
+        "user": {
+            "use": true
+        },
+        "account": {
+            "use": true
+        },
+        "macAccount": {
+            "use": true
+        },
+        "group": {
+            "use": true
+        },
+        "giftcard": {
+            "use": true
+        },
+        "email": {
+            "use": true,
+            "type": "mailgun",
+            "baseUrl": "https://api.mailgun.net/v3/mail.yourwebsite.com",
+            "apiKey": "key-e659e865e2bedbffa9726464412607246c9"
+        },
+        "webgui": {
+            "use": true,
+            "host": "0.0.0.0",
+            "port": "8082",
+            "site": "http://yourwebsite.com",
+            "cdn": "http://xxx.com",
+            "icon": "icon.png",
+            "skin": "default",
+            "googleAnalytics": "UA-123519562-1",
+            "gcmSenderId": "304516166451",
+            "gcmAPIKey": "AIzaSyAP0EFsi8h7gfggfgxJpyZI-Gxskhtiw"
+        },
+        "webgui_telegram": {
+            "use": true,
+            "token": "6565645396:AAESL8rxHMsL4els-XAvVe1idLfdsfgh121uvsU"
+        },
+        "alipay": {
+            "use": true,
+            "appid": "2015012108272442",
+            "notifyUrl": "http://yourwebsite.com/api/user/alipay/callback",
+            "merchantPrivateKey": "xxxxxxxxxxxx",
+            "alipayPublicKey": "xxxxxxxxxxx",
+            "gatewayUrl": "https://openapi.alipay.com/gateway.do"
+        }
+    },
+    "db": {
+        "host": "118.25.5.26",
+        "port": "3306",
+        "password": "password",
+        "user": "ssmgr",
+        "database": "ssmgr"
+    }
+}

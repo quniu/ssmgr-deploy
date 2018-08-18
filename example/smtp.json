@@ -1,0 +1,10 @@
+{
+    "email": {
+        "use": true,
+        "type": "smtp",
+        "username": "youmail@gmail.com",
+        "password": "password",
+        "host": "smtp.gmail.com"
+    }
+}
+

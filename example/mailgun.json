@@ -1,0 +1,8 @@
+{
+    "email": {
+        "use": true,
+        "type": "mailgun",
+        "baseUrl": "https://api.mailgun.net/v3/mail.yourwebsite.com",
+        "apiKey": "key-e659e865e2b46464fa970cf12446c9"
+    }
+}

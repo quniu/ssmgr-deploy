@@ -1,7 +1,3 @@
-example/mailgun.json
-example/smtp.json
-example/webgui.json
-example/webgui.yml
 /.idea
 npm-debug.log
 .DS_Store
