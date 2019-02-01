@@ -20,10 +20,10 @@ apt-get -y install wget
 
 下载脚本
 ```
-rm -rf install.sh
+rm -rf ./install.sh ./shadowsocks-manager.log
 wget --no-check-certificate https://raw.githubusercontent.com/quniu/ssmgr-deploy/master/install.sh
 chmod +x install.sh
-./install.sh
+./install.sh 2>&1 | tee shadowsocks-manager.log
 ```
 
 
