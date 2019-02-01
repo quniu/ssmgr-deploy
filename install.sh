@@ -36,6 +36,7 @@ mbedtls_url="https://tls.mbed.org/download/mbedtls-2.12.0-gpl.tgz"
 shadowsocks_manager_name="shadowsocks-manager"
 shadowsocks_libev_init="/etc/init.d/shadowsocks-manager"
 shadowsocks_libev_config="/etc/shadowsocks-manager/config.json"
+shadowsocks_manager_url="https://github.com/shadowsocks/shadowsocks-manager.git"
 shadowsocks_libev_centos="https://raw.githubusercontent.com/quniu/ssmgr-deploy/master/service/shadowsocks-manager"
 shadowsocks_libev_debian="https://raw.githubusercontent.com/quniu/ssmgr-deploy/master/service/shadowsocks-manager-debian"
 
@@ -226,10 +227,6 @@ get_libev_ver(){
     libev_ver=$(wget --no-check-certificate -qO- https://api.github.com/repos/shadowsocks/shadowsocks-libev/releases/latest | grep 'tag_name' | cut -d\" -f4)
     [ -z ${libev_ver} ] && echo -e "[${red}Error${plain}] Get shadowsocks-libev latest version failed" && exit 1
 }
-get_manager_ver(){
-    manager_ver=$(wget --no-check-certificate -qO- https://api.github.com/repos/quniu/shadowsocks-manager/releases/latest | grep 'tag_name' | cut -d\" -f4)
-    [ -z ${manager_ver} ] && echo -e "[${red}Error${plain}] Get shadowsocks-manager latest version failed" && exit 1
-}
 
 get_opsy(){
     [ -f /etc/redhat-release ] && awk '{print ($1,$3~/^[0-9]/?$3:$4)}' /etc/redhat-release && return
@@ -300,21 +297,22 @@ download(){
 }
 
 download_files(){
-    cd ${cur_dir}
-    if [ ! -d "/usr/local/${shadowsocks_manager_name}" ]; then
-        get_manager_ver
-        shadowsocks_manager_file="shadowsocks-manager-$(echo ${manager_ver} | sed -e 's/^[a-zA-Z]//g')"
-        shadowsocks_manager_url="https://github.com/quniu/shadowsocks-manager/releases/download/${manager_ver}/${shadowsocks_manager_file}.tar.gz"
-        download "${shadowsocks_manager_file}.tar.gz" "${shadowsocks_manager_url}"
-    else
-        echo -e "[${green}Info${plain}] shadowsocks-manager already installed."
-    fi  
+    # Clean install package
+    install_cleanup
+    
+    # Download shadowsocks-manager
+    if ! git clone ${shadowsocks_manager_url}; then
+        echo -e "[${red}Error${plain}] Failed to download shadowsocks-manager file!"
+        exit 1
+    fi
 
+    # Download shadowsocks-libev
     get_libev_ver
     shadowsocks_libev_file="shadowsocks-libev-$(echo ${libev_ver} | sed -e 's/^[a-zA-Z]//g')"
     shadowsocks_libev_url="https://github.com/shadowsocks/shadowsocks-libev/releases/download/${libev_ver}/${shadowsocks_libev_file}.tar.gz"
-
     download "${shadowsocks_libev_file}.tar.gz" "${shadowsocks_libev_url}"
+
+    # Download shadowsocks-manager service script
     if check_sys packageManager yum; then
         download "${shadowsocks_libev_init}" "${shadowsocks_libev_centos}"
     elif check_sys packageManager apt; then
@@ -624,7 +622,7 @@ install_prepare(){
     install_prepare_port
     install_prepare_cipher
     install_prepare_libev_obfs
-    install_shadowsocks_manager_prepare
+    install_prepare_manager
     echo "Press any key to start or Press Ctrl+C to cancel. Please continue!"
     char=`get_char`
 }
@@ -664,11 +662,10 @@ install_mbedtls(){
     fi
 }
 
-install_shadowsocks_manager(){
+deploy_shadowsocks_manager(){
     cd ${cur_dir}
     if [ ! -d "/usr/local/${shadowsocks_manager_name}" ]; then
-        tar zxf ${shadowsocks_manager_file}.tar.gz
-        mv ${shadowsocks_manager_file} /usr/local/${shadowsocks_manager_name}
+        mv ${shadowsocks_manager_name} /usr/local/${shadowsocks_manager_name}
         cd /usr/local/${shadowsocks_manager_name}
         npm install --unsafe-perm
         if [ $? -eq 0 ]; then
@@ -701,7 +698,7 @@ db: 'db.sqlite'
 EOF
 }
 
-install_shadowsocks_manager_prepare(){
+install_prepare_manager(){
     while true
     do
     #manager_password
@@ -836,7 +833,6 @@ install_cleanup(){
     rm -rf ${libsodium_file} ${libsodium_file}.tar.gz
     rm -rf ${mbedtls_file} ${mbedtls_file}-gpl.tgz
     rm -rf ${shadowsocks_libev_file} ${shadowsocks_libev_file}.tar.gz
-    rm -rf ${shadowsocks_manager_file} ${shadowsocks_manager_file}.tar.gz
 }
 
 install_main(){
@@ -859,7 +855,7 @@ install_main(){
         echo "/usr/lib" > /etc/ld.so.conf.d/lib.conf
     fi
     ldconfig
-    install_shadowsocks_manager
+    deploy_shadowsocks_manager
 }
 
 install_shadowsocks_libev(){
